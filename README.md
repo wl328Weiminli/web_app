@@ -9,5 +9,5 @@
 ## update blog post
 ![3](update_blog_post.png)
 
-##delete
+## delete
 ![4](del_blogpost.png)
