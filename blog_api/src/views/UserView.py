@@ -1,8 +1,10 @@
-from flask import request, json, Response, Blueprint
+# /src/views/UserView
+
+from flask import request, json, Response, Blueprint, g
 from ..models.UserModel import UserModel, UserSchema
 from ..shared.Authentication import Auth
 
-user_api = Blueprint('users', __name__)
+user_api = Blueprint('user_api', __name__)
 user_schema = UserSchema()
 
 
@@ -12,8 +14,11 @@ def create():
     Create User Function
     """
     req_data = request.get_json()
-    data, error = user_schema.load(req_data)
-
+    data = user_schema.load(req_data)
+    error = None
+    # data = user_schema.load(req_data)
+    # print("user_schema:")
+    # print(data)
     if error:
         return custom_response(error, 400)
 
@@ -26,7 +31,8 @@ def create():
     user = UserModel(data)
     user.save()
 
-    ser_data = user_schema.dump(user).data
+    print(user_schema.dump(user))
+    ser_data = user_schema.dump(user)
 
     token = Auth.generate_token(ser_data.get('id'))
 
@@ -42,6 +48,7 @@ def custom_response(res, status_code):
         response=json.dumps(res),
         status=status_code
     )
+
 
 @user_api.route('/', methods=['GET'])
 @Auth.auth_required
