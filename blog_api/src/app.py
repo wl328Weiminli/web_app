@@ -3,8 +3,9 @@
 from flask import Flask
 
 from .config import app_config
-
 from .models import db, bcrypt
+from .views.UserView import user_api as user_blueprint  # add this line
+from .views.BlogpostView import blogpost_api as blogpost_blueprint  # add this line
 
 
 def create_app(env_name):
@@ -17,15 +18,19 @@ def create_app(env_name):
 
     app.config.from_object(app_config[env_name])
 
+    # initializing bcrypt
     bcrypt.init_app(app)  # add this line
 
     db.init_app(app)  # add this line
+
+    app.register_blueprint(user_blueprint, url_prefix='/api/v1/users')
+    app.register_blueprint(blogpost_blueprint, url_prefix='/api/v1/blogposts')
 
     @app.route('/', methods=['GET'])
     def index():
         """
         example endpoint
         """
-        return 'Congratulations! Your first endpoint is working'
+        return 'Congratulations! Your first endpoint is workin'
 
     return app
